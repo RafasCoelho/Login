@@ -23,9 +23,15 @@ const userController = {
         }
     },
 
-    login: function (req, res) {
-        console.log('login')
-        res.send('login')
+    login:  async function (req, res) {
+        const selectedUser = await User.findOne({email:req.body.email})
+        if(!selectedUser) return res.status(400).send('Email or passowrd incorrect')
+
+        const passowrdAndUserMatch = bcrypt.compareSync(req.body.password, selectedUser.password)
+        if(!passowrdAndUserMatch) return res.status(400).send('Email or passowrd incorrect')
+
+        res.send('User Logged')
+
     }
 }
 
